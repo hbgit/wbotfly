@@ -19,18 +19,10 @@ with Browser() as browser:
     browser.find_by_text('Buscar').first.click()
 
     if browser.is_text_present('Receba alertas', wait_time=60):
-        flag_search = True
-        while flag_search:
-            print("Waiting ...")
-            print(len(browser.find_by_id('header-list-count')))
+        if browser.is_text_present('resultados ordenados', wait_time=60):
+            # print(browser.html)
+            browser.driver.save_screenshot("screen.png")
 
-            if len(browser.find_by_id('header-list-count')) == 0:
-                flag_search = True
-            else:
-                flag_search = False
-
-        browser.driver.save_screenshot("screen.png")
-        browser.quit()
     else:
         print("BUG :(")
-        browser.quit()
+        # browser.quit()
