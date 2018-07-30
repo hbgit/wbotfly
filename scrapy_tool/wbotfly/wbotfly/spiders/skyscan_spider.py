@@ -16,13 +16,22 @@ $ scrapy crawl skyscan
 import scrapy
 from scrapy_splash import SplashRequest
 
-from skyscan_item import SkyScanScraperItem
 
-# import SkyScanScraperItem
+# from skyscan_item import SkyScanScraperItem
+
+class SkyScanScraperItem(scrapy.Item):
+    company = scrapy.Field()
+    price = scrapy.Field()
+    # time_* is a list where the first data is GO and second
+    # is return
+    time_go = scrapy.Field()
+    time_return = scrapy.Field()
 
 
-class QuotesSpider(scrapy.Spider):
+class SkyScanSpider(scrapy.Spider):
     name = "skyscan"
+    # company = scrapy.Field()
+    # price = scrapy.Field()
     # download_delay = 5.0
 
     def start_requests(self):
@@ -53,14 +62,33 @@ enSort:::false=&dvflt:::=#results'
             self.log("Checking block prices...")
             # print(block_op.css)
             item = SkyScanScraperItem()
+
             item['company'] = block_op.css(
                         'div.ItineraryContent__group-logo-DYQgf\
                         span.AirlineLogo__airline-text-7EJ0z::text'
                       ).extract()
+
+            if not bool(item['company']):
+                # big-logo AirlineLogo__big-logo-22gjJ
+                item['company'] = block_op.css(
+                        'div.big-logo\
+                        img::attr(title)'
+                      ).extract_first()
+
             item['price'] = block_op.css(
                         'div.CTASection__price-horizontal-1syz1\
                          a.CTASection__price-2bc7h::text'
                     ).extract()
+
+            item['time_go'] = block_op.css(
+                'div.LegInfo__leg-depart-3GMlb\
+                span.LegInfo__times-Qn_ji::text'
+            ).extract()
+
+            item['time_return'] = block_op.css(
+                'div.LegInfo__leg-arrive-1spXx\
+                span.LegInfo__times-Qn_ji::text'
+            ).extract()
 
             yield item
 
