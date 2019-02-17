@@ -1,0 +1,42 @@
+<html>
+  <head>
+    <script type="text/javascript">
+      /**
+       * Delay for a number of milliseconds
+       */
+      function sleep(delay) {
+        var start = new Date().getTime();
+        while (new Date().getTime() < start + delay);
+      }
+    </script>
+  </head>
+  <body>
+    <h1>Eureka!</h1>
+      <script type="text/javascript">
+		while(true){			
+			//sleep(5000)
+			function readTextFile(file)
+			{
+				var rawFile = new XMLHttpRequest();
+				rawFile.open("GET", file, false);
+				rawFile.onreadystatechange = function ()
+				{
+					if(rawFile.readyState === 4)
+					{
+						if(rawFile.status === 200 || rawFile.status == 0)
+						{
+							var allText = rawFile.responseText;
+							alert(allText);
+						}
+					}
+				}
+				rawFile.send(null);
+			}
+			readTextFile("new_data.csv")
+		}
+      </script>
+      
+      <p id="demo"></p>
+      
+  </body>
+</html>
